@@ -4,15 +4,15 @@ import * as Generator from 'yeoman-generator'
 import yosay = require('yosay')
 
 import {Options} from '../commands/component'
+import { Utils } from '../utils';
 
 const {version} = require('../../package.json')
 
 class ComponentGenerator extends Generator {
   pjson!: any
+  utils = new Utils();
 
-  get _path() { return this.options.name.split(':').join('/') }
-  get _ts() { return this.pjson.devDependencies.typescript }
-  get _ext() { return this._ts ? 'ts' : 'js' }
+  get _path() { return `${this.utils.toKebabCase(this.options.name)}.component.ts` }
   get _mocha() { return this.pjson.devDependencies.mocha }
 
   constructor(args: any, public options: Options) {
@@ -31,20 +31,21 @@ class ComponentGenerator extends Generator {
     let bin = this.pjson.oclif.bin || this.pjson.oclif.dirname || this.pjson.name
     if (bin.includes('/')) bin = bin.split('/').pop()
     const cmd = `${bin} ${this.options.name}`
-    const componentPath = this.destinationPath(`src/components/${this._path}.${this._ext}`)
-    const opts = {...this.options, bin, cmd, _, type: 'component', path: componentPath}
-    this.fs.copyTpl(this.templatePath(`src/component.${this._ext}.ejs`), componentPath, opts)
-    // this.fs.copyTpl(this.templatePath(`plugin/src/hooks/init.${this._ext}`), this.destinationPath(`src/hooks/init.${this._ext}`), this)
-    if (this._mocha) {
-      // this.fs.copyTpl(this.templatePath(`plugin/test/hooks/init.test.${this._ext}`), this.destinationPath(`test/hooks/init.test.${this._ext}`), this)
-      this.fs.copyTpl(this.templatePath(`test/component.test.${this._ext}.ejs`), this.destinationPath(`test/components/${this._path}.test.${this._ext}`), opts)
+    const componentPath = this.destinationPath(`src/components/${this._path}`)
+    const opts = {...this.options, bin, cmd, _, type: 'component', path: componentPath, name: `${this.utils.toCapitalCase(this.options.name)}Component`}
+    this.fs.copyTpl(this.templatePath(`component.ejs`), componentPath, opts)
+    
+    const importLine = `export * from './${this.utils.toKebabCase(this.options.name)}.component';\n`;
+    if(this.fs.exists(this.destinationPath(`src/components/index.ts`))) {
+      let current = this.fs.read(this.destinationPath(`src/components/index.ts`), importLine);
+      this.fs.write(this.destinationPath(`src/components/index.ts`), `${current}${importLine}`,);
+    } else {
+      this.fs.write(this.destinationPath(`src/components/index.ts`), importLine);
     }
-    // this.fs.writeJSON(this.destinationPath('./package.json'), this.pjson)
+    if (this._mocha) {}
   }
 
-  end() {
-    //this.spawnCommandSync(path.join('.', 'node_modules/.bin/oclif-dev'), ['readme'])
-  }
+  end() {}
 }
 
 export = ComponentGenerator

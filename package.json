@@ -1,9 +1,9 @@
 {
   "name": "@mesa-engine/cli",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Aaron Sorensen @indiebash",
   "bin": {
-    "cli": "./bin/run"
+    "mesa": "./bin/run"
   },
   "bugs": "https://github.com/indiebash/cli/issues",
   "dependencies": {
@@ -49,7 +49,7 @@
   "main": "lib/index.js",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "cli",
+    "bin": "mesa",
     "plugins": [
       "@oclif/plugin-help"
     ]

@@ -7,6 +7,16 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/bin/run",
+            "args": [
+              "component",
+              "test_component"
+            ]
+          },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Mocha Tests",
             "program": "${workspaceRoot}/node_modules/mocha/bin/mocha",
             "args": [

@@ -1,0 +1,21 @@
+import { System, Family, Engine, FamilyBuilder } from "@mesa-engine/core";
+
+export class <%- name %> extends System {
+    public family: Family;
+  
+    onAttach(engine: Engine) {
+      super.onAttach(engine);
+      this.family = new FamilyBuilder(engine).include().build();
+    }
+  
+    onDetach(engine: Engine) {
+      super.onDetach(engine);
+      this.family = new FamilyBuilder(engine).include().build();
+    }
+  
+    update(engine: Engine, delta: number) {
+        this.family.entities.forEach( entity => {
+
+        });
+    }
+  }

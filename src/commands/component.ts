@@ -4,27 +4,22 @@ import Base from '../command-base'
 
 export interface Options {
   name: string
-  defaults?: boolean
-  force?: boolean
 }
 
-export default abstract class AppComponent extends Base {
-  static description = 'add a new component'
+export default abstract class ComponentCommand extends Base {
+  static description = 'Create a new component'
 
-  static flags = {
-    defaults: flags.boolean({description: 'use defaults for every setting'}),
-    force: flags.boolean({description: 'overwrite existing files'}),
-  }
+  static flags = {}
+
   static args = [
     {name: 'name', description: 'name of component', required: true}
   ]
 
   async run() {
-    const {flags, args} = this.parse(AppComponent)
+    const {flags, args} = this.parse(ComponentCommand)
     await super.generate('component', {
       name: args.name,
-      defaults: flags.defaults,
-      force: flags.force
+      force: true
     } as Options)
   }
 }
