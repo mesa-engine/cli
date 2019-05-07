@@ -1,9 +1,11 @@
 import { Command, flags } from '@oclif/command'
 import * as fs from 'fs';
+import { render } from 'mustache';
+//import * as file from '../templates/component.txt';
 
 export default class Generate extends Command {
     static description = 'Generate components, systems, and blueprints'
-
+    
     static examples = [
         `$ mesa generate c my-new-component`,
     ]
@@ -11,7 +13,7 @@ export default class Generate extends Command {
     static args = [{ name: 'type' }, { name: 'name' }];
 
     async run() {
-        const { args, flags } = this.parse(Generate)
+        const { args, flags } = this.parse(Generate);
 
         if (args.name && args.type) {
             switch (args.type) {
@@ -31,12 +33,14 @@ export default class Generate extends Command {
         const capitalName = this.kebabToCapital(kebabName);
 
         if (!fs.existsSync('src/components')) {
+            fs.mkdirSync('src');
             fs.mkdirSync('src/components');
         }
         if (fs.existsSync(`src/components/${kebabName}.component.ts`)) {
             this.log(`Component ("${name}") already exists. Please use another name.`)
         } else {
-            fs.appendFileSync(`src/components/${kebabName}.component.ts`, `export class ${capitalName}Component {}`);
+            let file = fs.readFileSync(`src/templates/component.txt`).toString();
+            fs.appendFileSync(`src/components/${kebabName}.component.ts`, render(file, {name: capitalName}));
             fs.appendFileSync(`src/components/index.ts`, `export * from './${kebabName}.component';\n`);
         }
     }
