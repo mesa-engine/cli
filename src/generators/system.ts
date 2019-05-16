@@ -30,11 +30,14 @@ class SystemGenerator extends Generator {
     this.sourceRoot(path.join(__dirname, '../../templates'))
     let bin = this.pjson.oclif.bin || this.pjson.oclif.dirname || this.pjson.name
     if (bin.includes('/')) bin = bin.split('/').pop()
+    
+    // Create new system.
     const cmd = `${bin} ${this.options.name}`
     const systemPath = this.destinationPath(`src/systems/${this._path}`)
     const opts = {...this.options, bin, cmd, _, type: 'system', path: systemPath, name: `${this.utils.toCapitalCase(this.options.name)}System`}
     this.fs.copyTpl(this.templatePath(`system.ejs`), systemPath, opts)
     
+    // Add export to index.ts
     const importLine = `export * from './${this.utils.toKebabCase(this.options.name)}.system';\n`
     if(this.fs.exists(this.destinationPath(`src/systems/index.ts`))) {
       let current = this.fs.read(this.destinationPath(`src/systems/index.ts`), importLine);
