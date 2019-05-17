@@ -4,7 +4,7 @@ import * as Generator from 'yeoman-generator'
 import yosay = require('yosay')
 
 import {Options} from '../commands/component'
-import { Utils } from '../utils';
+import { Utils, ClassType } from '../utils';
 
 const {version} = require('../../package.json')
 
@@ -12,28 +12,10 @@ class ComponentGenerator extends Generator {
   pjson!: any
   utils = new Utils();
 
-  get _componentPath() { 
-    let path = this.options.name.split('/');
-    path[path.length-1] = `${this.utils.toKebabCase(path[path.length-1])}.component.ts`;
-    return path.join('/');
-  }
-  get _indexPath() {
-    let path = this.options.name.split('/');
-    if(path.length > 1) {
-      path.pop();
-      return `src/components/${path.join('/')}/index.ts`;
-    } else {
-      return `src/components/index.ts`;
-    }
-  }
-  get _exportPath() {
-    let path = this.options.name.split('/');
-    return `export * from './${this.utils.toKebabCase(path[path.length-1])}.component';\n`;
-  }
-  get _className() {
-    let path = this.options.name.split('/');
-    return `${this.utils.toCapitalCase(path[path.length-1])}Component`;
-  }
+  get _componentPath() { return this.utils.getFilePath(this.options.name, ClassType.component) }
+  get _indexPath() { return this.utils.getIndexPath(this.options.name, ClassType.component) }
+  get _exportPath() { return this.utils.getExportPath(this.options.name, ClassType.component) }
+  get _className() { return this.utils.getClassName(this.options.name, ClassType.component) }
   get _mocha() { return this.pjson.devDependencies.mocha }
 
   constructor(args: any, public options: Options) {
@@ -51,8 +33,7 @@ class ComponentGenerator extends Generator {
     this.sourceRoot(path.join(__dirname, '../../templates'))
     let bin = this.pjson.oclif.bin || this.pjson.oclif.dirname || this.pjson.name
     if (bin.includes('/')) bin = bin.split('/').pop()
-    let test = this._componentPath;
-    let test2 = this._indexPath;
+
     // Create new component
     const cmd = `${bin} ${this.options.name}`
     const componentPath = this.destinationPath(`src/components/${this._componentPath}`)
