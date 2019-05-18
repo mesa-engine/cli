@@ -73,7 +73,7 @@ export class Utils {
 
     generateFiles(generator: Generator & {pjson: any}, type: ClassType) {
         const filePath = generator.destinationPath(`src/${type}s/${this.getFilePath(generator.options.name, type)}`);
-        const indexPath = this.getIndexPath(generator.options.name, type);
+        let indexPath = this.getIndexPath(generator.options.name, type);
         const exportPath = this.getExportPath(generator.options.name, type);
         const className = this.getClassName(generator.options.name, type);
 
@@ -82,17 +82,33 @@ export class Utils {
         if (bin.includes('/')) bin = bin.split('/').pop();
     
         // Create new class
-        const cmd = `${bin} ${generator.options.name}`
+        const cmd = `${bin} ${generator.options.name}`;
         const opts = {...generator.options, bin, cmd, _, type: type, path: filePath, name: className, componentsPath: this.getComponentPath(generator.options.name)};
-        generator.fs.copyTpl(generator.templatePath(`${type}.ejs`), filePath, opts)
+        generator.fs.copyTpl(generator.templatePath(`${type}.ejs`), filePath, opts);
         
-        // Add export to index.ts
-        if(generator.fs.exists(generator.destinationPath(indexPath))) {
-          let current = generator.fs.read(generator.destinationPath(indexPath), exportPath);
-          generator.fs.write(generator.destinationPath(indexPath), `${current}${exportPath}`,);
+      // Add export to index.ts
+      indexPath = `src/${type}s`;
+      let structure = generator.options.name.split('/');
+      for (let i = 0; i < structure.length; i++) {
+        if (i < structure.length - 1) {
+          if (generator.fs.exists(generator.destinationPath(`${indexPath}/index.ts`))) {
+            let current = generator.fs.read(generator.destinationPath(`${indexPath}/index.ts`), exportPath);
+            if(!current.includes(`./${structure[i]}';`)) {
+              generator.fs.write(generator.destinationPath(`${indexPath}/index.ts`), `${current}\nexport * from './${structure[i]}';`);
+            }
+          } else {
+            generator.fs.write(generator.destinationPath(`${indexPath}/index.ts`), `export * from './${structure[i]}';`);
+          }
+          indexPath += `/${structure[i]}`;
         } else {
-          generator.fs.write(generator.destinationPath(indexPath), exportPath);
+          if (generator.fs.exists(generator.destinationPath(`${indexPath}/index.ts`))) {
+            let current = generator.fs.read(generator.destinationPath(`${indexPath}/index.ts`), exportPath);
+            generator.fs.write(generator.destinationPath(`${indexPath}/index.ts`), `${current}${exportPath}`);
+          } else {
+            generator.fs.write(generator.destinationPath(`${indexPath}/index.ts`), exportPath);
+          }
         }
+      }
     }
 }
 
