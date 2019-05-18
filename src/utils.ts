@@ -1,3 +1,7 @@
+import * as _ from 'lodash'
+import * as Generator from 'yeoman-generator';
+import * as path from 'path';
+
 export class Utils {
     toKebabCase(str: string) {
         return str &&
@@ -42,6 +46,40 @@ export class Utils {
     getClassName(name: string, type: ClassType) {
         let path = name.split('/');
         return `${this.toCapitalCase(path[path.length - 1])}${this.uppercaseFirstLetter(type)}`;
+    }
+
+    getComponentPath(name: string) {
+        return ['..', ...name.split('/')].reduce((previous, current, index) => {
+          if(index === name.split('/').length) {
+            return `${previous}/components`;
+          } else {
+            return `${previous}/..`;
+          }
+        });
+      }
+
+    generateFiles(generator: Generator & {pjson: any}, type: ClassType) {
+        const filePath = generator.destinationPath(`src/${type}s/${this.getFilePath(generator.options.name, type)}`);
+        const indexPath = this.getIndexPath(generator.options.name, type);
+        const exportPath = this.getExportPath(generator.options.name, type);
+        const className = this.getClassName(generator.options.name, type);
+
+        generator.sourceRoot(path.join(__dirname, '../templates'));
+        let bin = generator.pjson.oclif.bin || generator.pjson.oclif.dirname || generator.pjson.name;
+        if (bin.includes('/')) bin = bin.split('/').pop();
+    
+        // Create new class
+        const cmd = `${bin} ${generator.options.name}`
+        const opts = {...generator.options, bin, cmd, _, type: type, path: filePath, name: className, componentsPath: this.getComponentPath(generator.options.name)};
+        generator.fs.copyTpl(generator.templatePath(`${type}.ejs`), filePath, opts)
+        
+        // Add export to index.ts
+        if(generator.fs.exists(generator.destinationPath(indexPath))) {
+          let current = generator.fs.read(generator.destinationPath(indexPath), exportPath);
+          generator.fs.write(generator.destinationPath(indexPath), `${current}${exportPath}`,);
+        } else {
+          generator.fs.write(generator.destinationPath(indexPath), exportPath);
+        }
     }
 }
 

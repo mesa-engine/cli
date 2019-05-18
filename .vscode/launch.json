@@ -10,7 +10,7 @@
             "name": "Launch Program",
             "program": "${workspaceFolder}/bin/run",
             "args": [
-              "blueprint",
+              "component",
               "creatures/enemies/orc"
             ]
           },
