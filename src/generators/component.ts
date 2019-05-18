@@ -17,10 +17,7 @@ class ComponentGenerator extends Generator {
   }
 
   async prompting() {
-    this.pjson = this.fs.readJSON('package.json')
-    if (!this.pjson) throw new Error('not in a project directory')
-    this.pjson.oclif = this.pjson.oclif || {}
-    this.log(yosay(`Adding a component to ${this.pjson.name} Version: ${version}`))
+    this.utils.promptGenerate(this, ClassType.component);
   }
 
   writing() {

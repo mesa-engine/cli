@@ -1,6 +1,8 @@
 import * as _ from 'lodash'
 import * as Generator from 'yeoman-generator';
 import * as path from 'path';
+const chalk = require('chalk');
+const version = require('../package.json')
 
 export class Utils {
     toKebabCase(str: string) {
@@ -56,6 +58,17 @@ export class Utils {
             return `${previous}/..`;
           }
         });
+      }
+
+      promptGenerate(generator: Generator & {pjson: any}, type: ClassType) {
+        generator.pjson = generator.fs.readJSON('package.json');
+        if (!generator.pjson) throw new Error('not in a project directory');
+        generator.pjson.oclif = generator.pjson.oclif || {};
+
+        generator.sourceRoot(path.join(__dirname, '../templates'));
+        let test = generator.fs.read(generator.templatePath(`mesa.ejs`));
+        generator.log(chalk.blue(`\n${test}`));
+        generator.log(chalk.blue(`\n  Adding a ${type} to ${generator.pjson.name} \n`));
       }
 
     generateFiles(generator: Generator & {pjson: any}, type: ClassType) {
