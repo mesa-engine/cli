@@ -1,2 +1,6 @@
 node_modules
 .nyc_output
+lib
+dist
+oclif.manifest.json
+tsconfig.tsbuildinfo

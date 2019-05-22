@@ -1,6 +1,7 @@
 {
   "name": "@mesa-engine/cli",
-  "version": "0.0.1",
+  "version": "0.0.4",
+  "private": false,
   "author": "Aaron Sorensen @indiebash",
   "bin": {
     "mesa": "./bin/run"
@@ -40,6 +41,7 @@
   "files": [
     "/bin",
     "/lib",
+    "/templates",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
@@ -59,9 +61,11 @@
   "repository": "indiebash/cli",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf lib && rm -rf tsconfig.tsbuildinfo && npm run build && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md",
+    "build": "npm run tsc",
+    "tsc": "tsc -b"
   },
   "types": "lib/index.d.ts"
 }
