@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+      "target": "es5",
+      "module": "CommonJS",
+      "strictNullChecks": true,
+      "removeComments": true,
+      "preserveConstEnums": true,
+      "resolveJsonModule": true,
+      "allowSyntheticDefaultImports": true,
+      "outDir": "lib",
+      "sourceMap": true,
+      "declaration": true,
+      "lib": ["es6", "es2015.promise", "dom"]
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "**/*.spec.ts"]
+  }
