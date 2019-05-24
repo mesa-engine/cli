@@ -60,8 +60,8 @@
   },
   "repository": "indiebash/cli",
   "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && rm -rf tsconfig.tsbuildinfo && npm run build && oclif-dev manifest && oclif-dev readme",
+    "postpack": "rm -f oclif.manifest.json && rm -rf tsconfig.tsbuildinfo",
+    "prepack": "rm -rf lib && npm run build && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md",
     "build": "npm run tsc",

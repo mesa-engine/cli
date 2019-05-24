@@ -59,15 +59,29 @@ export class Utils {
     });
   }
 
-  promptGenerate(generator: Generator & { pjson: any }, type: ClassType) {
+  setupTemplates(generator: Generator & { pjson: any }) {
     generator.pjson = generator.fs.readJSON('package.json');
     if (!generator.pjson) throw new Error('not in a project directory');
     generator.pjson.oclif = generator.pjson.oclif || {};
 
     generator.sourceRoot(path.join(__dirname, '../templates'));
-    let test = generator.fs.read(generator.templatePath(`mesa.ejs`));
-    generator.log(chalk.blueBright(`\n${test}`));
+  }
+
+  promptGenerate(generator: Generator & { pjson: any }, type: ClassType) {
+    this.setupTemplates(generator);
+    this.promptMesaLogo(generator);
     generator.log(chalk.blueBright(`\n  Adding a ${type} to ${generator.pjson.name} \n`));
+  }
+
+  promptNewApplication(generator: Generator & { pjson: any }) {
+    this.setupTemplates(generator);
+    this.promptMesaLogo(generator);
+    generator.log(chalk.blueBright(`\n Creating new project`));
+  }
+
+  promptMesaLogo(generator: Generator) {
+    let mesaText = generator.fs.read(generator.templatePath(`mesa.ejs`));
+    generator.log(chalk.blueBright(`\n${mesaText}`));
   }
 
   generateFiles(generator: Generator & { pjson: any }, type: ClassType) {
@@ -112,6 +126,10 @@ export class Utils {
         }
       }
     }
+  }
+
+  generateNewProject(generator: Generator) {
+    generator.fs.copy(generator.templatePath(`starter`), './DELETEME');
   }
 }
 
