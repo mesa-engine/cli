@@ -4,6 +4,7 @@ import * as path from 'path';
 const chalk = require('chalk');
 
 export class Utils {
+
   toKebabCase(str: string) {
     return str &&
       str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
@@ -60,23 +61,29 @@ export class Utils {
   }
 
   setupTemplates(generator: Generator & { pjson: any }) {
-    generator.pjson = generator.fs.readJSON('package.json');
-    if (!generator.pjson) throw new Error('not in a project directory');
-    generator.pjson.oclif = generator.pjson.oclif || {};
-
     generator.sourceRoot(path.join(__dirname, '../templates'));
   }
 
   promptGenerate(generator: Generator & { pjson: any }, type: ClassType) {
+    generator.pjson = generator.fs.readJSON('package.json');
+    if (!generator.pjson) throw new Error('not in a project directory');
+    generator.pjson.oclif = generator.pjson.oclif || {};
+
     this.setupTemplates(generator);
     this.promptMesaLogo(generator);
-    generator.log(chalk.blueBright(`\n  Adding a ${type} to ${generator.pjson.name} \n`));
+    generator.log(chalk.blueBright(`  Adding a ${type} to ${generator.pjson.name} \n`));
   }
 
   promptNewApplication(generator: Generator & { pjson: any }) {
     this.setupTemplates(generator);
     this.promptMesaLogo(generator);
-    generator.log(chalk.blueBright(`\n Creating new project`));
+    generator.log(chalk.blueBright(`\n Creating new project... \n`));
+  }
+
+  promptRunApplication(generator: Generator & { pjson: any }) {
+    this.setupTemplates(generator);
+    this.promptMesaLogo(generator);
+    generator.log(chalk.blueBright(`\n Building application... \n`));
   }
 
   promptMesaLogo(generator: Generator) {
@@ -129,7 +136,7 @@ export class Utils {
   }
 
   generateNewProject(generator: Generator) {
-    generator.fs.copy(generator.templatePath(`starter`), './DELETEME');
+    generator.fs.copy(generator.templatePath(`starter`), this.toKebabCase(generator.options.name));
   }
 }
 
