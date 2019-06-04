@@ -1,10 +1,16 @@
 import { Blueprint } from '@mesa-engine/core';
-import * as c from '../../components';
 import { RenderableBlueprint } from './renderable.blueprint';
+import { TextComponent } from '../../components';
 
 export class MesaTextBlueprint implements Blueprint {
-    blueprints = [new RenderableBlueprint]
+    blueprints = [new RenderableBlueprint];
     components = [
-        {component: c.TextComponent, values: {text: 'MESA', font: '52px Impact, Courier'}}
+        {
+            component: TextComponent, 
+            values: <TextComponent> {
+                text: 'MESA', 
+                font: '52px Impact, Courier'
+            }
+        }
     ];
 }

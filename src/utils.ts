@@ -50,16 +50,6 @@ export class Utils {
     return `${this.toCapitalCase(path[path.length - 1])}${this.uppercaseFirstLetter(type)}`;
   }
 
-  getComponentPath(name: string) {
-    return ['..', ...name.split('/')].reduce((previous, current, index) => {
-      if (index === name.split('/').length) {
-        return `${previous}/components`;
-      } else {
-        return `${previous}/..`;
-      }
-    });
-  }
-
   setupTemplates(generator: Generator & { pjson: any }) {
     generator.sourceRoot(path.join(__dirname, '../templates'));
   }
@@ -71,24 +61,24 @@ export class Utils {
 
     this.setupTemplates(generator);
     this.promptMesaLogo(generator);
-    generator.log(chalk.blueBright(`  Adding a ${type} to ${generator.pjson.name} \n`));
+    generator.log(chalk.blueBright(`  Adding a ${type} to ${generator.pjson.name}... \n`));
   }
 
   promptNewApplication(generator: Generator & { pjson: any }) {
     this.setupTemplates(generator);
     this.promptMesaLogo(generator);
-    generator.log(chalk.blueBright(`\n Creating new project... \n`));
+    generator.log(chalk.blueBright(`  Creating new project... \n`));
   }
 
   promptRunApplication(generator: Generator & { pjson: any }) {
     this.setupTemplates(generator);
     this.promptMesaLogo(generator);
-    generator.log(chalk.blueBright(`\n Building application... \n`));
+    generator.log(chalk.blueBright(`  Building application... \n`));
   }
 
   promptMesaLogo(generator: Generator) {
     let mesaText = generator.fs.read(generator.templatePath(`mesa.ejs`));
-    generator.log(chalk.blueBright(`\n${mesaText}`));
+    generator.log(chalk.blueBright(`\n${mesaText}\n`));
   }
 
   generateFiles(generator: Generator & { pjson: any }, type: ClassType) {
@@ -103,7 +93,7 @@ export class Utils {
 
     // Create new class
     const cmd = `${bin} ${generator.options.name}`;
-    const opts = { ...generator.options, bin, cmd, _, type: type, path: filePath, name: className, componentsPath: this.getComponentPath(generator.options.name) };
+    const opts = { ...generator.options, bin, cmd, _, type: type, path: filePath, name: className };
     if(generator.fs.exists(filePath)) {
       throw new Error(`${this.toCapitalCase(type)} ${className} already exists`);
     } else {
