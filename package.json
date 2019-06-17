@@ -1,6 +1,6 @@
 {
   "name": "@mesa-engine/cli",
-  "version": "0.0.10",
+  "version": "0.0.13",
   "private": false,
   "author": "Aaron Sorensen @indiebash",
   "bin": {
