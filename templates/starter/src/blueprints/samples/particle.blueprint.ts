@@ -7,19 +7,19 @@ export class ParticleBlueprint implements Blueprint {
     components = [
         {
             component: SizeComponent, 
-            values: <SizeComponent> {
+            value: <SizeComponent> {
                 value: Math.floor(Math.random() * 10) + 1
             }
         },
         {
             component: RisingAnimationComponent, 
-            values: <RisingAnimationComponent> {
+            value: <RisingAnimationComponent> {
                 speed: Math.random() * 10 + 2
             }
         },
         {
             component: RenderComponent, 
-            values: <RenderComponent> {
+            value: <RenderComponent> {
                 opacity: Math.random()
             }
         }

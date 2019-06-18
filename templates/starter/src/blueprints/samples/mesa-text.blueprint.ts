@@ -7,7 +7,7 @@ export class MesaTextBlueprint implements Blueprint {
     components = [
         {
             component: TextComponent, 
-            values: <TextComponent> {
+            value: <TextComponent> {
                 text: 'MESA', 
                 font: '52px Impact, Courier'
             }

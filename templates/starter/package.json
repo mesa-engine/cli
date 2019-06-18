@@ -16,6 +16,6 @@
     "typescript": "^3.4.5"
   },
   "dependencies": {
-    "@mesa-engine/core": "^1.0.1"
+    "@mesa-engine/core": "^1.0.4"
   }
 }
